@@ -4,10 +4,10 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean --outDir ../dist",
-    "start": "node ../dist/index.js",
+    "build": "pwd && tsup src/index.ts --format esm --dts --clean --outDir ./dist",
+    "start": "pwd && ls -la && node ./dist/index.js",
     "dev": "nodemon --exec node --loader ts-node/esm src/index.ts",
-    "clean": "rm -rf ../dist"
+    "clean": "rm -rf ./dist"
   },
   "dependencies": {
     "@elizaos/adapter-mongodb": "0.25.6-alpha.1",
