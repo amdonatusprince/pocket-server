@@ -118,36 +118,18 @@ const checkPortAvailable = (port: number): Promise<boolean> => {
 
 const startAgents = async () => {
   const directClient = new DirectClient();
-  if (!settings.SERVER_PORT) {
-    throw new Error("SERVER_PORT setting is required");
-  }
-  let serverPort = parseInt(settings.SERVER_PORT);
-
+  const serverPort = 4123; // Set fixed port
+  
   try {
     const runtime = await startAgent(character, directClient as DirectClient);
     console.log("Agent runtime created with ID:", runtime.agentId);
+    
+    directClient.start(serverPort);
+    console.log(`Server running on port ${serverPort}`);
+    
   } catch (error) {
     elizaLogger.error("Error starting agents:", error);
     process.exit(1);
-  }
-
-  while (!(await checkPortAvailable(serverPort))) {
-    elizaLogger.warn(`Port ${serverPort} is in use, trying ${serverPort + 1}`);
-    serverPort++;
-  }
-
-  directClient.startAgent = async (character: Character) => {
-    return startAgent(character, directClient);
-  };
-
-  await new Promise<void>((resolve) => {
-    directClient.start(serverPort);
-    // Give the server a moment to initialize
-    setTimeout(resolve, 2000);
-  });
-
-  if (serverPort !== parseInt(settings.SERVER_PORT)) {
-    elizaLogger.log(`Server started on alternate port ${serverPort}`);
   }
 };
 
