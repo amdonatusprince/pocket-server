@@ -97,28 +97,9 @@ async function startAgent(character: Character, directClient: DirectClient) {
   }
 }
 
-const checkPortAvailable = (port: number): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const server = net.createServer();
-
-    server.once("error", (err: NodeJS.ErrnoException) => {
-      if (err.code === "EADDRINUSE") {
-        resolve(false);
-      }
-    });
-
-    server.once("listening", () => {
-      server.close();
-      resolve(true);
-    });
-
-    server.listen(port);
-  });
-};
-
 const startAgents = async () => {
   const directClient = new DirectClient();
-  const serverPort = 4123; // Set fixed port
+  const serverPort = process.env.PORT ? parseInt(process.env.PORT) : 4123; // Use Render PORT or fallback to 4123
   
   try {
     const runtime = await startAgent(character, directClient as DirectClient);
